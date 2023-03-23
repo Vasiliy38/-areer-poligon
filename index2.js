@@ -14,7 +14,7 @@ ymaps.ready(function () {
         return dd
     }
 
-    fetch('regions/76.json',)
+    fetch('76.json',)
         .then(arr => arr.json())
         .then(arr => {
             const geoObj = []
