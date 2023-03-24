@@ -1,7 +1,7 @@
 ymaps.ready(function () {
     var myMap = new ymaps.Map("map", {
-        center: [57.60, 38.54],
-        zoom: 8
+        center: [55.75, 37.61],
+        zoom: 4
     }, {
         searchControlProvider: 'yandex#search'
     })
@@ -56,7 +56,7 @@ ymaps.ready(function () {
             arr.forEach(elem => {
                 if (elem.geo.length) {
 
-                    elem.geo.forEach(el => el.map(x => coord.push(x.map(y => get_decimaldegree(y.match(regex))))))
+                    elem.geo.forEach(el => coord.push(el.map(x => x.map(y => get_decimaldegree(y.match(regex))))))
 
                     dataArray.push({
                         geo: coord,
@@ -71,21 +71,27 @@ ymaps.ready(function () {
             return dataArray
         })
         .then(arr => {
+
             let dataArray = []
             arr.forEach(obj => {
                 if (obj.geo.length) {
                     let geo = []
 
                     obj.geo.forEach(x => {
-                        for (let i = 0; i < x.length; i++) {
-                            if (Number(String(x[i])[0]) >= 5) {
-                                geo.push(x.slice(i, i + 2))
-                                i += 1
-                            } else {
-                                geo.push(x.slice(i, i + 2).reverse())
-                                i += 1
+                        x.forEach(a=>{
+                            for (let i = 0; i < a.length; i++) {
+                                if (Number(String(a[i])[0]) !== 0) {
+                                    if (Number(String(a[i])[0]) >= 5) {
+                                        geo.push(a.slice(i, i + 2))
+                                        i += 1
+                                    } else {
+                                        geo.push(a.slice(i, i + 2).reverse())
+                                        i += 1
+                                    }
+                                }
                             }
-                        }
+
+                        })
                         dataArray.push({
                             geo,
                             name: obj.name,
@@ -103,6 +109,7 @@ ymaps.ready(function () {
         })
         .then(arr => {
             console.log(arr)
+
             arr.forEach((obj) => {
                 if (obj.geo.length) {
                     if (!obj.active) {
@@ -115,38 +122,19 @@ ymaps.ready(function () {
                             geometry: {
                                 type: 'Polygon',
                                 coordinates: [obj.geo]
+                                // coordinates: [obj.geo]
                             },
                             properties: {
                                 hintContent: obj.name,
                                 balloonContent: `<a target="_blank" href="${obj.link}">${obj.link}</a><br><strong>${obj.company}</strong>`
                             },
                             options: {
-                                opacity: 1,
-                                strokeWidth: 1,
-                                strokeColor: '#1d7200'
-                            }
-                        })
-                        objectManager.add(objects)
-                        myMap.geoObjects.add(objectManager)
-                    } else if (obj.active.includes('Аннулирование')) {
-                        var objectManager = new ymaps.ObjectManager({clusterize: false});
-                        var objects = []
-                        objects.push({
-                            type: 'Feature',
-                            id: 4,
+                                opacity: 0.7,
+                                interactivityModel: 'default#transparent',
 
-                            geometry: {
-                                type: 'Polygon',
-                                coordinates: [obj.geo]
-                            },
-                            properties: {
-                                hintContent: obj.name,
-                                balloonContent: `<a target="_blank" href="${obj.link}">${obj.link}</a><br><strong>${obj.company}</strong>`
-                            },
-                            options: {
-                                opacity: .7,
-                                strokeWidth: 1,
-                                strokeColor: '#f50000'
+                                strokeWidth: 2,
+                                strokeColor: '#1a6500',
+                                fillColor:'#38de00'
                             }
                         })
                         objectManager.add(objects)
@@ -157,7 +145,7 @@ ymaps.ready(function () {
                         objects.push({
                             type: 'Feature',
                             id: 4,
-
+                            clusterize: true,
                             geometry: {
                                 type: 'Polygon',
                                 coordinates: [obj.geo]
@@ -168,8 +156,12 @@ ymaps.ready(function () {
                             },
                             options: {
                                 opacity: .7,
-                                strokeWidth: 1,
-                                strokeColor: '#fff200'
+                                interactivityModel: 'default#transparent',
+                                strokeWidth: 2,
+                                strokeColor: '#ffc100',
+                                fillColor:'#fff200'
+
+
                             }
                         })
                         objectManager.add(objects)
