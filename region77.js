@@ -30,7 +30,7 @@ ymaps.ready(function () {
         .then(arr => arr.json())
         .then(arr => {
             var objectManager = new ymaps.ObjectManager({clusterize: false});
-
+console.log(arr)
             objectManager.add(arr)
             myMap.geoObjects.add(objectManager)
         })
